@@ -1,48 +1,138 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Frank AI 💬</title>
+  <title>Live Exchange Rates</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 2em; background: #f4f4f4; }
-    h1 { color: #333; }
-    #response { margin-top: 1em; background: #fff; padding: 1em; border-radius: 6px; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    label {
+      display: block;
+      font-size: 18px;
+      margin: 10px 0 5px;
+    }
+
+    select, input {
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #0d47a1;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f1f1f1;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
-  <h1>Frank AI 🤖💬</h1>
-  <textarea id="userInput" rows="4" cols="50" placeholder="Ask something...❓"></textarea><br>
-  <button onclick="askGPT()">Ask Frank! 🚀</button>
-  <div id="response"></div>
+
+  <h1>Live Exchange Rates</h1>
+
+  <label for="base-currency">Base Currency:</label>
+  <select id="base-currency">
+    <!-- Options will be populated -->
+  </select>
+
+  <button onclick="getRates()">Get Rates</button>
+
+  <input type="text" id="search" placeholder="Search currency..." oninput="filterCurrencies()">
+
+  <table>
+    <thead>
+      <tr>
+        <th>Currency</th>
+        <th>Rate</th>
+      </tr>
+    </thead>
+    <tbody id="rates-body"></tbody>
+  </table>
 
   <script>
-    async function askGPT() {
-      const apiKey = "sk-proj-XXXXXXXXXXXXXXXXXXXXXXXX"; // 🔐 Replace with your key (for testing only)
-      const prompt = document.getElementById("userInput").value;
-      const responseDiv = document.getElementById("response");
+    const API_KEY = "676f546c4731b409be5eb0df";
+    const currencyList = [ "USD", "EUR", "GBP", "JPY", "CAD", "AUD", "CHF", "CNY", "SEK", "NZD", "INR", "MXN", "BRL", "ZAR", "SGD" ];
 
-      responseDiv.innerHTML = "Thinking... 🤔";
-
-      const result = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "user", content: prompt }],
-        })
+    // Populate base currency dropdown
+    function loadCurrencies() {
+      const select = document.getElementById("base-currency");
+      currencyList.forEach(code => {
+        const option = document.createElement("option");
+        option.value = code;
+        option.textContent = code;
+        select.appendChild(option);
       });
+      select.value = "USD";
+    }
 
-      const data = await result.json();
+    // Get exchange rates from API
+    async function getRates() {
+      const base = document.getElementById("base-currency").value;
 
-      if (data.choices) {
-        responseDiv.innerHTML = "💡 Answer: <br><br>" + data.choices[0].message.content;
-      } else {
-        responseDiv.innerHTML = "❌ Error: " + (data.error?.message || "Unknown error");
+      try {
+        const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${base}`);
+        const data = await res.json();
+
+        if (data.result !== "success") {
+          alert("API error: " + data["error-type"]);
+          return;
+        }
+
+        const tbody = document.getElementById("rates-body");
+        tbody.innerHTML = "";
+
+        for (const [currency, rate] of Object.entries(data.conversion_rates)) {
+          const row = document.createElement("tr");
+          row.innerHTML = `<td>${currency}</td><td>${rate.toFixed(4)}</td>`;
+          tbody.appendChild(row);
+        }
+      } catch (err) {
+        alert("Failed to fetch data: " + err.message);
       }
     }
+
+    // Filter visible currencies
+    function filterCurrencies() {
+      const filter = document.getElementById("search").value.toLowerCase();
+      const rows = document.querySelectorAll("#rates-body tr");
+      rows.forEach(row => {
+        const currency = row.children[0].textContent.toLowerCase();
+        row.style.display = currency.includes(filter) ? "" : "none";
+      });
+    }
+
+    // On load
+    loadCurrencies();
   </script>
+
 </body>
 </html>
