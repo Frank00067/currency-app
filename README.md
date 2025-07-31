@@ -11,7 +11,7 @@ It uses an external API (ExchangeRate API) and is containerized for deployment w
 
 ## 📂 Docker Hub Repo
 
-- **URL**: [https://hub.docker.com/r/franknkurunziza/currency-app](https://hub.docker.com/r/franknkurunziza/currency-app)
+- **URL**: https://hub.docker.com/repository/docker/franknkurunziza/currency-app/general
 - **Image Name**: `franknkurunziza/currency-app`
 - **Tags Used**: `v1`, `latest`
 
