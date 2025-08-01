@@ -32,21 +32,24 @@ bash
 Copy
 Edit
 docker build -t franknkurunziza/currency-app:v1 .
+
 ▶️ Run & test locally
 bash
 Copy
 Edit
-docker run -p 8080:8080 franknkurunziza/currency-app:v1
-curl http://localhost:8080
+docker run -p 4000:8080 franknkurunziza/currency-app:v1
+curl http://localhost:4000
+
 🚀 Push to Docker Hub
 bash
 Copy
 Edit
 docker login
 docker push franknkurunziza/currency-app:v1
-🏢 Deployment on Lab Machines
-Since Docker is not installed inside lab containers, use Docker Compose on the host system:
 
+🏢 Deployment on Lab Machines
+
+Since Docker is not installed inside lab containers, use Docker Compose on the host system:
 docker-compose.yml
 yaml
 Copy
@@ -56,7 +59,7 @@ services:
   web-01:
     image: franknkurunziza/currency-app:v1
     ports:
-      - "8081:8080"
+      - "4000:8080"
     networks:
       mynet:
         ipv4_address: 172.20.0.11
@@ -64,7 +67,7 @@ services:
   web-02:
     image: franknkurunziza/currency-app:v1
     ports:
-      - "8082:8080"
+      - "4000:8080"
     networks:
       mynet:
         ipv4_address: 172.20.0.12
