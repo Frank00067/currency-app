@@ -1,55 +1,56 @@
-# 💱 Currency App
+💱 Currency App
+The Currency App is a simple, containerized web application that allows users to:
 
-The **Currency App** is a simple web application that allows users to:
+🌍 View current exchange rates
 
-- View current exchange rates
-- Choose base currencies
-- Get updated conversion information in real time  
-It uses an external API (ExchangeRate API) and is containerized for deployment with Docker and HAProxy-based load balancing.
+🔄 Choose base currencies
 
----
+📈 Get updated conversion information in real time
 
-## 📂 Docker Hub Repo
+It uses the ExchangeRate API for currency data and is deployed using Docker and HAProxy for load balancing.
 
-- **URL**: https://hub.docker.com/repository/docker/franknkurunziza/currency-app/general
-- **Image Name**: `franknkurunziza/currency-app`
-- **Tags Used**: `v1`, `latest`
+📺 Demo
+🔗 Local App: http://localhost:4000
 
----
+🎥 Demo Video: [Insert your video link here]
+The demo showcases:
 
-## 🤺 Build Instructions
+App running locally
 
-To build the image locally:
+Load-balanced access through HAProxy (lb-01)
 
-```bash
+🐳 Docker Hub Repo
+URL: Docker Hub - franknkurunziza/currency-app
+
+Image Name: franknkurunziza/currency-app
+
+Tags Used: v1, latest
+
+🧱 Build & Run Instructions
+🔧 Build the Docker image locally
+bash
+Copy
+Edit
 docker build -t franknkurunziza/currency-app:v1 .
-```
-
-To run and test the container locally:
-
-```bash
+▶️ Run & test locally
+bash
+Copy
+Edit
 docker run -p 8080:8080 franknkurunziza/currency-app:v1
 curl http://localhost:8080
-```
-
----
-
-## 🚀 Push to Docker Hub
-
-```bash
+🚀 Push to Docker Hub
+bash
+Copy
+Edit
 docker login
 docker push franknkurunziza/currency-app:v1
-```
+🏢 Deployment on Lab Machines
+Since Docker is not installed inside lab containers, use Docker Compose on the host system:
 
----
-
-## 🏢 Deployment on Lab Machines
-
-Since Docker is not installed inside `web-01` and `web-02` containers, use Docker Compose from the host system:
-
-### `docker-compose.yml`
-
-```yaml
+docker-compose.yml
+yaml
+Copy
+Edit
 version: '3'
 services:
   web-01:
@@ -84,13 +85,10 @@ networks:
     ipam:
       config:
         - subnet: 172.20.0.0/16
-```
-
----
-
-## ⚖️ HAProxy Config (`haproxy.cfg`)
-
-```haproxy
+⚖️ HAProxy Configuration (haproxy.cfg)
+cfg
+Copy
+Edit
 defaults
   mode http
   timeout connect 5000ms
@@ -105,77 +103,68 @@ backend webapps
   balance roundrobin
   server web01 172.20.0.11:8080 check
   server web02 172.20.0.12:8080 check
-```
-
-Apply HAProxy config updates with:
-
-```bash
+🔁 Apply HAProxy Config Changes
+bash
+Copy
+Edit
 docker exec -it lb-01 sh -c 'haproxy -sf $(pidof haproxy) -f /usr/local/etc/haproxy/haproxy.cfg'
-```
+🧪 Load Balancer Test
+Run the following multiple times to confirm round-robin behavior:
 
----
-
-## 🔧 Load Balancer Testing
-
-Run the following several times:
-
-```bash
+bash
+Copy
+Edit
 curl http://localhost
-```
+✅ You should see alternating responses from web-01 and web-02.
 
-✅ You should see alternating responses from `web-01` and `web-02`.
+🌐 External API - ExchangeRate API
+Example URL:
+https://v6.exchangerate-api.com/v6/676f546c4731b409be5eb0df/latest/USD
 
----
+Features:
 
-## 🌍 External API Used
+Supports 160+ currencies
 
-- **ExchangeRate API**
-  - **API Key Used**: `676f546c4731b409be5eb0df`
-  - **Base URL Example**: `https://v6.exchangerate-api.com/v6/676f546c4731b409be5eb0df/latest/USD`
-  - **Features**: Get exchange rates for 160+ currencies
-  - **Authentication**: API key required
-  - **Rate Limit**: Based on your free or paid plan tier
-  - **Docs**: [https://www.exchangerate-api.com/docs](https://www.exchangerate-api.com/docs)
+Requires API Key
 
----
+Rate limits based on plan
 
-## ✅ Features
+Docs: ExchangeRate API Docs
 
-- Currency conversion with base/target selection
-- Real-time exchange rates
-- Clean, responsive UI
-- Dockerized deployment with HAProxy load balancing
+✅ Features
+Currency conversion with base/target currency selection
 
----
+Real-time exchange rates using API
 
-## 🎥 Demo Video
+Clean and responsive UI
 
-🎬 *[Include your video demo link here]*  
-It should show:
-- App use locally
-- Load-balanced access via `lb-01`
+Containerized using Docker
 
----
+Load-balanced using HAProxy and Docker Compose
 
-## 📄 Challenges Faced
+🛠️ Challenges Faced
+✅ Solved using Docker Compose on the host with HAProxy for load balancing
 
-- Cannot install Docker inside lab containers.
-- Solved by using host-based Docker Compose and HAProxy setup.
+🛡️ Security Notes
+⚠️ This README contains a test API key. For production:
 
----
+Use .env to store secrets
 
-## 🛡️ Security Notes
+Do not hard-code keys in source files
 
-- ⚠️ This README contains a test API key. In real deployments, store your key in `.env` and never hard-code it.
-- Use `ENV` or `ARG` in Dockerfiles to pass secrets securely.
+Use ENV or ARG in your Dockerfile to pass secrets securely
 
----
+👤 Author
+Frank Nkurunziza
+Built, containerized, and deployed the Currency App for a CS project using:
 
-## 📅 Author
+Docker
 
-**Frank Nkurunziza**  
-Built, containerized, and deployed the Currency App using Docker, Docker Hub, and HAProxy for CS Project.
+Docker Hub
 
----
+HAProxy
 
-📘 *This app is for educational purposes. Currency data sourced via ExchangeRate API.*
+ExchangeRate API
+
+📘 Disclaimer
+This app is built for educational purposes. Currency data is sourced via ExchangeRate API.
