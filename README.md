@@ -12,7 +12,7 @@ It uses the ExchangeRate API for currency data and is deployed using Docker and 
 📺 Demo
 🔗 Local App: http://localhost:4000
 
-🎥 Demo Video: [Insert your video link here]
+🎥 Demo Video: https://youtu.be/Qe81EzwlD_o
 The demo showcases:
 
 App running locally
